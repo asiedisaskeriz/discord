@@ -4,8 +4,6 @@ import json
 import time
 import requests
 import websocket
-from websocket import WebSocket
-from keep_alive import keep_alive
 
 status = "online"  # online/dnd/idle
 
@@ -52,14 +50,11 @@ def run_joiner():
     os.system("clear")
     print(f"Logged in as {username}#{discriminator} ({userid}).")
     while True:
-        ws = WebSocket()
-        ws.connect('wss://gateway.discordapp.com/?v=9&encoding=json')
-        ws.on_message = on_message
-        ws.on_error = on_error
-        ws.on_close = on_close
+        ws = websocket.WebSocketApp('wss://gateway.discordapp.com/?v=9&encoding=json',
+                                    on_message=on_message,
+                                    on_error=on_error,
+                                    on_close=on_close)
         ws.on_open = on_open
         ws.run_forever()
-        time.sleep(30)
 
-keep_alive()
 run_joiner()
