@@ -8,7 +8,7 @@ from keep_alive import keep_alive
 
 keep_alive()
 
-status = "online" #online/dnd/idle
+status = "dnd" #online/dnd/idle
 
 GUILD_ID = 1168551939299086386
 CHANNEL_ID = 1170013140193390632
