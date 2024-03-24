@@ -5,6 +5,7 @@ import time
 import requests
 import websocket
 from keep_alive import keep_alive
+keep_alive()
 
 status = "online" #online/dnd/idle
 
