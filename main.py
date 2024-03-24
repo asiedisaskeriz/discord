@@ -15,15 +15,15 @@ SELF_DEAF = False
 
 usertoken = os.getenv("TOKEN")
 if not usertoken:
-  print("[ERROR] Please add a token inside Secrets.")
-  sys.exit()
+    print("[ERROR] Please add a token inside Secrets.")
+    sys.exit()
 
 headers = {"Authorization": usertoken, "Content-Type": "application/json"}
 
 validate = requests.get('https://canary.discordapp.com/api/v9/users/@me', headers=headers)
 if validate.status_code != 200:
-  print("[ERROR] Your token might be invalid. Please check it again.")
-  sys.exit()
+    print("[ERROR] Your token might be invalid. Please check it again.")
+    sys.exit()
 
 userinfo = requests.get('https://canary.discordapp.com/api/v9/users/@me', headers=headers).json()
 username = userinfo["username"]
@@ -48,16 +48,16 @@ def on_message(ws, message):
     print(f"[INFO] Received message: {message}")
 
 def run_joiner():
-  os.system("cls")
-  print(f"Logged in as {username}#{discriminator} ({userid}).")
-  while True:
-    ws = websocket.WebSocket('wss://gateway.discordapp.com/?v=9&encoding=json',
-                                on_open=on_open,
-                                on_error=on_error,
-                                on_close=on_close,
-                                on_message=on_message)
-    ws.run_forever()
-    time.sleep(30)
+    os.system("clear")
+    print(f"Logged in as {username}#{discriminator} ({userid}).")
+    while True:
+        ws = websocket.WebSocketApp('wss://gateway.discordapp.com/?v=9&encoding=json',
+                                    on_open=on_open,
+                                    on_error=on_error,
+                                    on_close=on_close,
+                                    on_message=on_message)
+        ws.run_forever()
+        time.sleep(30)
 
 keep_alive()
 run_joiner()
