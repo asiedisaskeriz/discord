@@ -50,11 +50,11 @@ def run_joiner():
     os.system("clear")
     print(f"Logged in as {username}#{discriminator} ({userid}).")
     while True:
-        ws = websocket.WebSocketApp('wss://gateway.discordapp.com/?v=9&encoding=json',
-                                    on_message=on_message,
-                                    on_error=on_error,
-                                    on_close=on_close)
-        ws.on_open = on_open
+        ws = websocket.WebSocket()
+        ws.on_message = on_message
+        ws.on_error = on_error
+        ws.on_close = on_close
+        ws.connect('wss://gateway.discordapp.com/?v=9&encoding=json')
         ws.run_forever()
 
 run_joiner()
