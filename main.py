@@ -3,7 +3,7 @@ import sys
 import json
 import time
 import requests
-import websocket
+from websocket import WebSocket
 from keep_alive import keep_alive
 
 status = "online" #online/dnd/idle
@@ -20,23 +20,43 @@ if not usertoken:
 
 headers = {"Authorization": usertoken, "Content-Type": "application/json"}
 
-validate = requests.get('https://canary.discordapp.com/api/v9/users/@me', headers=headers)
-if validate.status_code != 200:
-    print("[ERROR] Your token might be invalid. Please check it again.")
-    sys.exit()
-
 userinfo = requests.get('https://canary.discordapp.com/api/v9/users/@me', headers=headers).json()
 username = userinfo["username"]
 discriminator = userinfo["discriminator"]
 userid = userinfo["id"]
 
 def on_open(ws):
-    auth = {"op": 2,"d": {"token": usertoken,"properties": {"$os": "Windows 10","$browser": "Google Chrome","$device": "Windows"},"presence": {"status": status,"afk": False}},"s": None,"t": None}
-    vc = {"op": 4,"d": {"guild_id": GUILD_ID,"channel_id": CHANNEL_ID,"self_mute": SELF_MUTE,"self_deaf": SELF_DEAF}}
+    auth = {
+        "op": 2,
+        "d": {
+            "token": usertoken,
+            "properties": {
+                "$os": "Windows 10",
+                "$browser": "Google Chrome",
+                "$device": "Windows"
+            },
+            "presence": {
+                "status": status,
+                "since": int(time.time() * 1000),
+                "afk": False
+            }
+        },
+        "s": None,
+        "t": None
+    }
+
+    vc = {
+        "op": 4,
+        "d": {
+            "guild_id": GUILD_ID,
+            "channel_id": CHANNEL_ID,
+            "self_mute": SELF_MUTE,
+            "self_deaf": SELF_DEAF
+        }
+    }
+
     ws.send(json.dumps(auth))
     ws.send(json.dumps(vc))
-    time.sleep(30)
-    ws.close()
 
 def on_error(ws, error):
     print(f"[ERROR] {error}")
@@ -51,13 +71,13 @@ def run_joiner():
     os.system("clear")
     print(f"Logged in as {username}#{discriminator} ({userid}).")
     while True:
-        ws = websocket.WebSocket('wss://gateway.discordapp.com/?v=9&encoding=json',
-                                    on_open=on_open,
-                                    on_error=on_error,
-                                    on_close=on_close,
-                                    on_message=on_message)
+        ws = WebSocket()
+        ws.connect('wss://gateway.discordapp.com/?v=9&encoding=json')
+        ws.on_message = on_message
+        ws.on_error = on_error
+        ws.on_close = on_close
+        ws.on_open = on_open
         ws.run_forever()
-        time.sleep(30)
 
 keep_alive()
 run_joiner()
