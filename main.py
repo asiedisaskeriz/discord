@@ -8,7 +8,7 @@ from keep_alive import keep_alive
 
 keep_alive()
 
-status = "dnd"  # online/dnd/idle
+status = "dnd" #online/dnd/idle
 
 GUILD_ID = 1168551939299086386
 CHANNEL_ID = 1170013140193390632
@@ -33,53 +33,20 @@ discriminator = userinfo["discriminator"]
 userid = userinfo["id"]
 
 def joiner(token, status):
-    ws = websocket.WebSocketApp('wss://gateway.discord.gg/?v=9&encoding=json')
-    
-    def on_message(ws, message):
-        print("Received:", message)
-        # Burada mesajları işleyebilirsiniz
-
-    def on_error(ws, error):
-        print("Error:", error)
-
-    def on_close(ws):
-        print("Connection closed")
-
-    def on_open(ws):
-        print("Connected")
-        auth = {
-            "op": 2,
-            "d": {
-                "token": token,
-                "properties": {
-                    "$os": "Windows 10",
-                    "$browser": "Google Chrome",
-                    "$device": "Windows"
-                },
-                "presence": {
-                    "status": status,
-                    "afk": False
-                }
-            }
-        }
-        vc = {
-            "op": 4,
-            "d": {
-                "guild_id": GUILD_ID,
-                "channel_id": CHANNEL_ID,
-                "self_mute": SELF_MUTE,
-                "self_deaf": SELF_DEAF
-            }
-        }
-        ws.send(json.dumps(auth))
-        ws.send(json.dumps(vc))
-    
-    ws.on_message = on_message
-    ws.on_error = on_error
-    ws.on_close = on_close
-    ws.on_open = on_open
-    
-    ws.run_forever()
+    ws = websocket.WebSocket()
+    ws.connect('wss://gateway.discord.gg/?v=9&encoding=json')
+    start = json.loads(ws.recv())
+    heartbeat = start['d']['heartbeat_interval']
+    auth = {"op": 2,"d": {"token": token,"properties": {"$os": "Windows 10","$browser": "Google Chrome","$device": "Windows"},"presence": {"status": status,"afk": False}},"s": None,"t": None}
+    vc = {"op": 4,"d": {"guild_id": GUILD_ID,"channel_id": CHANNEL_ID,"self_mute": SELF_MUTE,"self_deaf": SELF_DEAF}}
+    ws.send(json.dumps(auth))
+    ws.send(json.dumps(vc))
+    while True:
+        response = json.loads(ws.recv())
+        if response['op'] == 11:
+            heartbeat_interval = response['d']['heartbeat_interval']
+            time.sleep(heartbeat_interval / 1000)
+            ws.send(json.dumps({'op': 1, 'd': None}))
 
 def run_joiner():
     os.system("clear")
