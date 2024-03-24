@@ -30,23 +30,33 @@ username = userinfo["username"]
 discriminator = userinfo["discriminator"]
 userid = userinfo["id"]
 
-def joiner(token, status):
-    ws = websocket.WebSocket()
-    ws.connect('wss://gateway.discord.gg/?v=9&encoding=json')
-    start = json.loads(ws.recv())
-    heartbeat = start['d']['heartbeat_interval']
-    auth = {"op": 2,"d": {"token": token,"properties": {"$os": "Windows 10","$browser": "Google Chrome","$device": "Windows"},"presence": {"status": status,"afk": False}},"s": None,"t": None}
+def on_open(ws):
+    auth = {"op": 2,"d": {"token": usertoken,"properties": {"$os": "Windows 10","$browser": "Google Chrome","$device": "Windows"},"presence": {"status": status,"afk": False}},"s": None,"t": None}
     vc = {"op": 4,"d": {"guild_id": GUILD_ID,"channel_id": CHANNEL_ID,"self_mute": SELF_MUTE,"self_deaf": SELF_DEAF}}
     ws.send(json.dumps(auth))
     ws.send(json.dumps(vc))
-    time.sleep(heartbeat / 1000)
-    ws.send(json.dumps({"op": 1,"d": None}))
+    time.sleep(30)
+    ws.close()
+
+def on_error(ws, error):
+    print(f"[ERROR] {error}")
+
+def on_close(ws):
+    print("[INFO] Connection closed.")
+
+def on_message(ws, message):
+    print(f"[INFO] Received message: {message}")
 
 def run_joiner():
   os.system("clear")
   print(f"Logged in as {username}#{discriminator} ({userid}).")
   while True:
-    joiner(usertoken, status)
+    ws = websocket.WebSocketApp('wss://gateway.discordapp.com/?v=9&encoding=json',
+                                on_open=on_open,
+                                on_error=on_error,
+                                on_close=on_close,
+                                on_message=on_message)
+    ws.run_forever()
     time.sleep(30)
 
 keep_alive()
