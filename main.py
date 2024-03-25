@@ -1,6 +1,7 @@
 import os
 import sys
 import requests
+import websocket
 import websocket_client
 from websocket_client import create_connection
 
