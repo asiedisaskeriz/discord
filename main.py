@@ -1,7 +1,5 @@
 import os
 import sys
-import json
-import time
 import requests
 from websocket import WebSocketApp
 
@@ -29,7 +27,7 @@ username = userinfo["username"]
 discriminator = userinfo["discriminator"]
 userid = userinfo["id"]
 
-def on_message(ws, message):
+def on_message(message):
     print(f"[INFO] Received message: {message}")
 
 def run_joiner():
