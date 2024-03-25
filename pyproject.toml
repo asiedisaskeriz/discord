@@ -4,6 +4,9 @@ version = "1.0.0"
 description = "A code that can make your discord account 24/7 on voice channels!"
 authors = ["SealedSaucer"]
 
+// Add missing import statement for Flask module
+import Flask
+
 [tool.poetry.dependencies]
 python = ">=3.10.0,<3.11"
 numpy = "^1.22.2"
