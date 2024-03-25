@@ -2,7 +2,9 @@ import os
 import sys
 import requests
 import websocket
-from websocket_client import create_connection
+import websocket
+from websocket import create_connection
+
 
 status = "online"  # online/dnd/idle
 
@@ -31,12 +33,15 @@ userid = userinfo["id"]
 def on_message(message):
     print(f"[INFO] Received message: {message}")
 
+import websocket
+
 def run_joiner():
-    os.system("cls")  # use cls for windows
+    os.system("cls")  # use cls for windows 
     print(f"Logged in as {username}#{discriminator} ({userid}).")
     while True:
-        ws = WebSocketApp('wss://gateway.discordapp.com/?v=9&encoding=json',
+        ws = websocket.WebSocketApp('wss://gateway.discordapp.com/?v=9&encoding=json',
                           on_message=on_message)
         ws.run_forever()
+
 
 run_joiner()
