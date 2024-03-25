@@ -1,6 +1,7 @@
 import os
 import sys
 import requests
+import websocket_client
 from websocket_client import create_connection
 
 status = "online"  # online/dnd/idle
