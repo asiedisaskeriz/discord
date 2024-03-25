@@ -2,14 +2,14 @@ import os
 import sys
 import requests
 import websocket
-import websocket
-from websocket import create_connection
+import websocket_client
+from websocket_client import create_connection
 
 
 status = "online"  # online/dnd/idle
 
 GUILD_ID = 1168551939299086386
-CHANNEL_ID = 1170013140193390632
+CHANNEL_ID = 1170013140193390632 
 SELF_MUTE = False
 SELF_DEAF = False
 
@@ -27,16 +27,18 @@ if validate.status_code != 200:
 
 userinfo = requests.get('https://canary.discordapp.com/api/v9/users/@me', headers=headers).json()
 username = userinfo["username"]
-discriminator = userinfo["discriminator"]
+discriminator = userinfo["discriminator"]  
 userid = userinfo["id"]
 
 def on_message(message):
     print(f"[INFO] Received message: {message}")
 
 import websocket
+import websocket_client
+from websocket_client import create_connection
 
 def run_joiner():
-    os.system("cls")  # use cls for windows 
+    os.system("cls")  # use cls for windows
     print(f"Logged in as {username}#{discriminator} ({userid}).")
     while True:
         ws = websocket.WebSocketApp('wss://gateway.discordapp.com/?v=9&encoding=json',
