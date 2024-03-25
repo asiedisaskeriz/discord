@@ -1,4 +1,4 @@
-requests
-websocket
-websocket-client
-Flask
+requests==2.31.0
+websocket==0.2.1
+websocket-client==1.7.0
+Flask==2.2.0
